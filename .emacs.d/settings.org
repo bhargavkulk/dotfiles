@@ -29,12 +29,18 @@ I use =use-package= to download and configure external packages.
 
 * General Settings
 
+I have a custom theme.
+
+#+begin_src emacs-lisp
+  (load-theme 'monoish)
+#+end_src
+
 =better-defaults= seems like a nice package to remove the extra cruft that comes
 with the default Emacs config.
 
-#+begin_src emacs-lisp
-    (use-package better-defaults
-      :ensure t)
+  ,#+begin_src emacs-lisp
+      (use-package better-defaults
+        :ensure t)
 #+end_src
 
 I don't want to see the normal welcome screen. 
@@ -82,32 +88,6 @@ I don't need tooltips.
   (set-face-attribute 'default nil :font "Menlo" :height 200)
 #+end_src
 
-I want to try a duospaced font as my writing font.
-
-#+begin_src emacs-lisp
-  ;; Set Times New Roman as the default font only in org-mode
-  (defun my-org-mode-font-setup ()
-    "Set Times New Roman as the default font in org-mode."
-    ;; Set default font for org-mode
-    (set-face-attribute 'default nil :family "iA Writer Duo S" :height 200)
-    ;; Ensure inline code blocks (e.g., `=code=`) use a monospaced font
-    (set-face-attribute 'org-code nil :family "Menlo" :height 200)
-    ;; Ensure begin_src code blocks use a monospaced font
-    (set-face-attribute 'org-block nil :family "Menlo" :height 200))
-
-  ;; Apply this font setup only in org-mode
-  (add-hook 'org-mode-hook 'my-org-mode-font-setup)
-
-    ;; Function to set Courier New in the minibuffer when in org-mode
-  (defun my-org-mode-minibuffer-font-setup ()
-    "Set Courier New as the font in the minibuffer when in org-mode."
-    (when (eq major-mode 'org-mode)
-      (set-face-attribute 'minibuffer nil :family "Menlo" :height 200)))
-
-  ;; Hook to change the minibuffer font only in org-mode
-  (add-hook 'minibuffer-setup-hook 'my-org-mode-minibuffer-font-setup)
-#+end_src
-
 Why is this a thing?
 
 #+begin_src emacs-lisp
@@ -123,27 +103,17 @@ Neat feature that shows the buffer boundaries.
 Gruvbox is the theme I have settled on.
 
 #+begin_src emacs-lisp
-  (use-package doom-themes
-    :ensure t
-    :config
-    ;; Global settings (defaults)
-    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-          doom-themes-enable-italic t) ; if nil, italics is universally disabled
-    (load-theme 'doom-gruvbox t)
-
-    ;; Enable flashing mode-line on errors
-    (doom-themes-visual-bell-config)
-    ;; Corrects (and improves) org-mode's native fontification.
-    (doom-themes-org-config))
+  (use-package autothemer
+    :ensure t)
 #+end_src
 
 Differentiate between buffer and the minibuffer.
 
 #+begin_src emacs-lisp
-(use-package solaire-mode
-  :ensure t
-  :config
-  (solaire-global-mode +1))
+  (use-package solaire-mode
+    :ensure t
+    :config
+    (solaire-global-mode +1))
 #+end_src
 
 A better cursor.
@@ -225,7 +195,7 @@ Olivetti mode centers text.
 
 =esc= is a better way to quit out of commands than the default =C g=.
 
-`#+begin_src emacs-lisp
+#+begin_src emacs-lisp
   (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 #+end_src
 
@@ -372,6 +342,7 @@ I use Racket a lot.
     (eglot-extend-to-xref t)              ; activate Eglot in referenced non-project files
 
     :config
+    (setq eglot-highlight-symbol nil)
     (fset #'jsonrpc--log-event #'ignore)  ; massive perf boost---don't log every event
     ;; Sometimes you need to tell Eglot where to find the language server
     (add-to-list 'eglot-server-programs

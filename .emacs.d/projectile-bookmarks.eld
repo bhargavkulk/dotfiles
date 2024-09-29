@@ -1,1 +1,1 @@
-("~/Projects/dotfiles/" "~/Projects/herbie-stuff/herbie/")
+("~/Projects/dotfiles/" "~/Projects/herbie-stuff/herbie/" "~/Projects/brainfuck/" "~/Projects/shader-plse-game-jam/")

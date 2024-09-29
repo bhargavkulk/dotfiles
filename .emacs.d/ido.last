@@ -1,0 +1,44 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/Users/bhargavkk/Projects/shader-plse-game-jam/" . "src/")
+ ("/Users/bhargavkk/Projects/dotfiles/" . ".emacs.d/")
+ ("/Users/bhargavkk/Projects/" . "shader-plse-game-jam/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/Users/bhargavkk/Projects/shader-plse-game-jam/src/"
+ "/Users/bhargavkk/Projects/brainfuck/"
+ "/Users/bhargavkk/Projects/dotfiles/.emacs.d/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "main.rs"
+ "Makefile"
+ "monoish-theme.el"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/Users/bhargavkk/Projects/shader-plse-game-jam/src/" (26352 52089 457235 787000) "main.rs" "../" "./")
+
+ ("/Users/bhargavkk/Projects/shader-plse-game-jam/" (26352 52103 879892 526000) "src/" "assets/" ".git/" ".github/" ".gitignore" "README.md" "Cargo.lock" "target/" "Makefile" "LICENSE" "index.html" "Cargo.toml" "../" "./")
+
+ ("/Users/bhargavkk/Projects/brainfuck/" (26354 2875 10522 768000) "src/" ".cache/" ".git/" "build/" "bfbenchmarks/" ".clang-format" ".gitignore" "main.c" "a.out" "README.md" ".gitmodules" "include/" "Makefile" "bin/" "compile_commands.json" "mandel.b" "LICENSE" "main.s" "dis.txt" "../" "./")
+
+ ("/Users/bhargavkk/Projects/brainfuck/src/" (26341 10415 134631 642000) "data.c" "main.c" "../" "./")
+
+ ("/Users/bhargavkk/Projects/dotfiles/.emacs.d/" (26360 51877 620679 469000) "backups/" "settings.el" ".cache/" "monoish.el" "elpa/" "early-init.el" "history" ".gitignore" "monoish-theme.el" "init.el" "auto-save-list/" "custom.el" "projectile-bookmarks.eld" "places" "eshell/" "settings.org" "../" "./")
+
+ ("/Users/bhargavkk/Projects/dotfiles/" (26360 40908 519320 304000) ".git/" "README.md" ".emacs.d/" "LICENSE" "../" "./")
+
+ ("/Users/bhargavkk/Projects/" (26360 41143 396360 612000) "QD/" "llvm-c-search/" "batches/" "cgaltest/" "build/" "herbie-stuff/" "djot.zed/" "brainfuck/" "scratch/" "llvm-project/" "testrust/" ".emacs.d/" "racket-zed/" "logspace/" "medjot/" "lightning-2.2.3/" "code-for-blog/" "websitetemplate/" "racket.sublime/" "dotfiles/" ".DS_Store" "go/" "cs6450-labs/" "shader-plse-game-jam/" "TeX/" "bhargavkulk.github.io/" "racket_test/" "lightning/" "zed/" "tes.cpp" "../" "./")
+
+ ("/Users/bhargavkk/Projects/herbie-stuff/" (26360 51920 363645 764000) "command.txt" "quad2p.csv" "total_error.py" "sep26.csv" ".ipynb_checkpoints/" "credentials.json" "sept9.csv" "sep26/" "hamming/" "output.csv" "herbie-papers/" "download.py" "test.csv" "ffi.rkt" "hamming.csv" "hamming-main/" "blah.py" "Untitled.ipynb" "examples.txt" "upload.py" "sept9/" "hamming-main.csv" ".DS_Store" "main.rkt" "herbie/" "nightly.cs.washington.edu/" "../" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t

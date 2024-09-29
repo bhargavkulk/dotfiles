@@ -1,0 +1,42 @@
+(require 'autothemer)
+
+(autothemer-deftheme
+ monoish "monochromish theme"
+ ((((class color) (min-colors #xFFFFFF)))
+
+  ;; Color Pallete
+  (mn-black "#000000")
+  (mn-white "#ffffff")
+  (mn-dk-orange "#66ff00")
+  (mn-gray "#636363")
+  (mn-lt-gray "#a7a7a7")
+  (mn-dk-gray "#323232")
+  (mn-dk-green "#003B00")
+  (mn-red "#DC143C")
+  (mn-ochre "#CC7722"))
+ 
+ ((default (:foreground mn-white :background mn-black))
+  (cursor (:background mn-dk-orange))
+  (font-lock-keyword-face (:underline t :weight 'bold))
+  (font-lock-constant-face (:italic t))
+  (font-lock-string-face (:foreground mn-gray))
+  (font-lock-comment-face (:foreground mn-dk-gray :italic t))
+  (font-lock-doc-face (:foreground mn-gray :italic t))
+  (font-lock-builtin-face (:weight 'bold))
+  (font-lock-variable-name-face (:foreground mn-lt-gray))
+  (font-lock-function-name-face (:foreground mn-dk-orange))
+  (racket-keyword-argument-face (:inherit 'default :underline t))
+  (racket--sexp-comment--font-lock-keyword-face (:inherit font-lock-comment-face))
+  (font-lock-operator-face (:foreground mn-gray))
+  (show-paren-match (:background mn-dk-orange))
+  (region (:background mn-dk-orange))
+  (font-lock-type-face (:inherit 'default :italic t))
+  (eshell-prompt (:weight 'bold))
+  (racket-repl-error-message (:foreground mn-black :background mn-red))
+  (flymake-error (:underline (:color mn-red :style 'line)))
+  (flymake-note (:underline (:color mn-ochre :style 'line)))
+  (vertico-current (:inherit 'default :underline t))
+  (minibuffer-prompt (:foreground mn-dk-orange))
+  ))
+
+(provide-theme 'monoish)
