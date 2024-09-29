@@ -1,0 +1,7 @@
+backups/
+elpa/
+history
+places
+auto-save-list/
+settings.el
+custom.el

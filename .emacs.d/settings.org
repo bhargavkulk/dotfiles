@@ -1,0 +1,375 @@
+#+title: My Emacs Settings
+#+author: Bhargav Kulkarni
+#+email: bhargavkishork@gmail.com
+This file is to be a living document of my Emacs settings. My previous Emacs settings suffered because I never
+documented them and after a while I never understood what the hell is going on.
+
+* Emacs Cruft
+
+Emacs generates some custom settings. I want to move them to a specific file.
+
+#+begin_src emacs-lisp
+  (setq custom-file "~/.emacs.d/custom.el")
+  (load custom-file)
+#+end_src
+
+* Packages
+
+I am not a free-opensource purist/cultist so MELPA is OK.
+
+#+begin_src emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+  (package-initialize)
+  (unless package-archive-contents
+    (package-refresh-contents))
+#+end_src
+
+I use =use-package= to download and configure external packages.
+
+* General Settings
+
+=better-defaults= seems like a nice package to remove the extra cruft that comes
+with the default Emacs config.
+
+#+begin_src emacs-lisp
+    (use-package better-defaults
+      :ensure t)
+#+end_src
+
+I don't want to see the normal welcome screen. 
+
+#+begin_src emacs-lisp
+  (setopt inhibit-startup-screen t)
+  (setopt inhibit-startup-message t)
+  (setopt inihibit-startup-echo-area-message t)
+#+end_src
+
+Instead I want to open Emacs at =~/Projects/= which holds all my current coding projects.
+
+#+begin_src emacs-lisp
+  (defun my-open-dired-if-no-file ()
+    "Open Dired in ~/Projects/ if no file is provided at startup."
+    (when (and (eq (length command-line-args) 1) ; Only Emacs itself in args
+               (not (member "-nw" command-line-args))) ; Not in terminal mode
+      (dired "~/Projects/")))
+
+  (add-hook 'emacs-startup-hook 'my-open-dired-if-no-file)
+#+end_src
+
+My eyes always travel to the top, so its better to move the modeline to the top of screen.
+
+#+begin_src emacs-lisp
+  (setq-default header-line-format mode-line-format)
+  (setq-default mode-line-format nil)
+#+end_src
+
+See column and file progess information in the modeline too.
+
+#+begin_src emacs-lisp
+  (setopt column-number-mode t)
+  (setopt size-indication-mode t)
+#+end_src
+
+I don't need Emacs screaming at me.
+
+#+begin_src emacs-lisp
+  (setopt visible-bell t)
+#+end_src
+
+I don't need tooltips.
+
+#+begin_src emacs-lisp
+  (tooltip-mode -1)
+#+end_src
+
+=Menlo=, although a system default, is a damn good font.
+
+#+begin_src emacs-lisp
+  (set-face-attribute 'default nil :font "Menlo" :height 200)
+#+end_src
+
+I want to try a duospaced font as my writing font.
+
+#+begin_src emacs-lisp
+  ;; Set Times New Roman as the default font only in org-mode
+  (defun my-org-mode-font-setup ()
+    "Set Times New Roman as the default font in org-mode."
+    ;; Set default font for org-mode
+    (set-face-attribute 'default nil :family "iA Writer Duo S" :height 200)
+    ;; Ensure inline code blocks (e.g., `=code=`) use a monospaced font
+    (set-face-attribute 'org-code nil :family "Menlo" :height 200)
+    ;; Ensure begin_src code blocks use a monospaced font
+    (set-face-attribute 'org-block nil :family "Menlo" :height 200))
+
+  ;; Apply this font setup only in org-mode
+  (add-hook 'org-mode-hook 'my-org-mode-font-setup)
+
+    ;; Function to set Courier New in the minibuffer when in org-mode
+  (defun my-org-mode-minibuffer-font-setup ()
+    "Set Courier New as the font in the minibuffer when in org-mode."
+    (when (eq major-mode 'org-mode)
+      (set-face-attribute 'minibuffer nil :family "Menlo" :height 200)))
+
+  ;; Hook to change the minibuffer font only in org-mode
+  (add-hook 'minibuffer-setup-hook 'my-org-mode-minibuffer-font-setup)
+#+end_src
+
+Why is this a thing?
+
+#+begin_src emacs-lisp
+  (setopt sentence-end-double-space nil)
+#+end_src
+
+Neat feature that shows the buffer boundaries.
+
+#+begin_src emacs-lisp
+  (setopt indicate-buffer-boundaries 'left)
+#+end_src
+
+Gruvbox is the theme I have settled on.
+
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :ensure t
+    :config
+    ;; Global settings (defaults)
+    (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+          doom-themes-enable-italic t) ; if nil, italics is universally disabled
+    (load-theme 'doom-gruvbox t)
+
+    ;; Enable flashing mode-line on errors
+    (doom-themes-visual-bell-config)
+    ;; Corrects (and improves) org-mode's native fontification.
+    (doom-themes-org-config))
+#+end_src
+
+Differentiate between buffer and the minibuffer.
+
+#+begin_src emacs-lisp
+(use-package solaire-mode
+  :ensure t
+  :config
+  (solaire-global-mode +1))
+#+end_src
+
+A better cursor.
+
+#+begin_src emacs-lisp
+  (blink-cursor-mode -1)
+  (setq-default cursor-type 'bar)
+#+end_src
+
+Show line numbers in programming buffers.
+
+#+begin_src emacs-lisp
+  ;; Display line numbers in programming mode
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (setopt display-line-numbers-width 3)
+#+end_src
+
+Better linewrapping.
+
+#+begin_src emacs-lisp
+  ;; Nice line wrapping when working with text
+  (add-hook 'text-mode-hook 'visual-line-mode)
+#+end_src
+
+Olivetti mode centers text.
+
+#+begin_src emacs-lisp
+  (use-package olivetti
+    :ensure t)
+
+  (add-hook 'olivetti-mode-on-hook (lambda () (olivetti-set-width 100)))
+#+end_src
+
+=corfu= gives a better completion experience.
+
+#+begin_src emacs-lisp
+    ;; Popup completion-at-point
+  (use-package corfu
+    :ensure t
+    :init
+    (global-corfu-mode)
+    :bind
+    (:map corfu-map
+          ("SPC" . corfu-insert-separator)))
+
+    ;; Part of corfu
+  (use-package corfu-popupinfo
+    :after corfu
+    :hook (corfu-mode . corfu-popupinfo-mode)
+    :custom
+    (corfu-popupinfo-delay '(0.25 . 0.1))
+    (corfu-popupinfo-hide nil)
+    :config
+    (corfu-popupinfo-mode))
+
+    ;; Pretty icons for corfu
+  (use-package kind-icon
+    :if (display-graphic-p)
+    :ensure t
+    :after corfu
+    :config
+    (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+#+end_src
+
+* Keymaps
+
+=esc= is a better way to quit out of commands than the default =C g=.
+
+`#+begin_src emacs-lisp
+  (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+#+end_src
+
+=Tab= should work like it should does in the shell in the minibuffer.
+
+#+begin_src emacs-lisp
+   (keymap-set minibuffer-mode-map "TAB" 'minibuffer-complete)
+#+end_src
+
+Allow horizontal scrolling.
+
+#+begin_src emacs-lisp
+  (setopt mouse-wheel-tilt-scroll t)
+  (setopt mouse-wheel-flip-direction t)
+#+end_src
+
+And make scrolling pixel precise.
+
+#+begin_src emacs-lisp
+  (pixel-scroll-precision-mode)
+#+end_src
+
+Make Emacs prefer splitting vertically.
+
+#+begin_src emacs-lisp
+  (setq split-width-threshold 1)
+#+end_src
+
+Add a way to reconfigure settings quickly.
+
+#+begin_src emacs-lisp
+  (defun reconfigure () (interactive)
+         (load-file "~/.emacs.d/init.el"))
+#+end_src
+
+* Minibuffer
+
+=which-key= shows possible commands when pressing the start of a keybinding
+
+#+begin_src emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode))
+#+end_src
+
+Things that help minibuffer entry and completion.
+
+#+begin_src emacs-lisp
+  ;; tab cycles through completions
+  (setopt completion-cycle-threshold 1)
+  (setopt completions-detailed t)
+  ;; try to complete before indenting
+  (setopt tab-always-indent 'complete)
+  (setopt completion-styles '(basic initials substring))
+  ;; try to complete if possible
+  (setopt completion-auto-help 'always)                 
+  (setopt completions-max-height 20)                    
+  (setopt completions-detailed t)
+  (setopt completions-format 'one-column)
+  (setopt completions-group t)
+  (setopt completion-auto-select 'second-tab)
+#+end_src
+
+=vertico= is a nice package that eagerly shows all commands on pressing =M-x=.
+
+#+begin_src emacs-lisp
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode))
+#+end_src
+
+=marginalia= annotates menu items.
+
+#+begin_src emacs-lisp
+  (use-package marginalia
+    :ensure t
+    :init (marginalia-mode))
+#+end_src
+
+=consult= shows previews for a lot of things.
+
+#+begin_src emacs-lisp
+  (use-package consult
+    :ensure t
+    :bind (
+           ;; Drop-in replacements
+           ("C-x b" . consult-buffer)     ; orig. switch-to-buffer
+           )
+    :config
+    ;; Narrowing lets you restrict results to certain groups of candidates
+    (setq consult-narrow-key "<"))
+  #+end_src
+
+* Programming Stuff
+
+This will set up Treesitter on a later date.
+
+#+begin_src emacs-lisp
+  (use-package emacs
+    :config
+    ;; Treesitter config
+
+    ;; Tell Emacs to prefer the treesitter mode
+    ;; You'll want to run the command `M-x treesit-install-language-grammar' before editing.
+    ;;(setq major-mode-remap-alist
+    ;;      '((yaml-mode . yaml-ts-mode)
+    ;;        (bash-mode . bash-ts-mode)
+    ;;        (js2-mode . js-ts-mode)
+    ;;        (typescript-mode . typescript-ts-mode)
+    ;;        (json-mode . json-ts-mode)
+    ;;        (css-mode . css-ts-mode)
+    ;;        (python-mode . python-ts-mode)))
+    :hook
+    ;; Auto parenthesis matching
+    ((prog-mode . electric-pair-mode)))
+#+end_src
+
+Project management with projectile.
+
+#+begin_src emacs-lisp
+  (use-package projectile
+    :ensure t
+    :init
+    (projectile-mode +1))
+#+end_src
+
+I use Racket a lot.
+
+#+begin_src emacs-lisp
+  (use-package racket-mode
+    :ensure t)
+
+  (setopt racket-program "/Applications/Racket v8.11.1/bin/racket")
+#+end_src
+
+** Language Servers
+
+#+begin_src emacs-lisp
+  (use-package eglot
+    ;; no :ensure t here because it's built-in
+    :custom
+    (eglot-send-changes-idle-time 0.1)
+    (eglot-extend-to-xref t)              ; activate Eglot in referenced non-project files
+
+    :config
+    (fset #'jsonrpc--log-event #'ignore)  ; massive perf boost---don't log every event
+    ;; Sometimes you need to tell Eglot where to find the language server
+    (add-to-list 'eglot-server-programs
+                 '(racket-mode . ("racket" "-l" "racket-langserver"))))
+
+  (add-hook 'racket-mode-hook 'eglot-ensure)
+#+end_src
