@@ -57,13 +57,6 @@ Instead I want to open Emacs at =~/Projects/= which holds all my current coding 
   (add-hook 'emacs-startup-hook 'my-open-dired-if-no-file)
 #+end_src
 
-My eyes always travel to the top, so its better to move the modeline to the top of screen.
-
-#+begin_src emacs-lisp
-  (setq-default header-line-format mode-line-format)
-  (setq-default mode-line-format nil)
-#+end_src
-
 See column and file progess information in the modeline too.
 
 #+begin_src emacs-lisp
@@ -213,6 +206,19 @@ Olivetti mode centers text.
     :after corfu
     :config
     (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package mood-line
+
+  ;; Enable mood-line
+  :config
+  (mood-line-mode)
+
+  ;; Use pretty Fira Code-compatible glyphs
+  :custom
+  (mood-line-glyph-alist mood-line-glyphs-unicode))
+
 #+end_src
 
 * Keymaps
