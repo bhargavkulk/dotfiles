@@ -1,0 +1,9 @@
+font-family = Ioskeley Mono
+theme = Nord
+background = #000000
+palette = 0=#000000
+palette = 8=#000000
+command = "/opt/homebrew/bin/fish"
+shell-integration = fish
+keybind = global:cmd+/=toggle_quick_terminal
+quick-terminal-size = 50%,50%
