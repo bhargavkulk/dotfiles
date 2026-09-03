@@ -7,3 +7,4 @@ command = "/opt/homebrew/bin/fish"
 shell-integration = fish
 keybind = global:cmd+/=toggle_quick_terminal
 quick-terminal-size = 50%,50%
+font-feature = -calt, -liga, -dlig
