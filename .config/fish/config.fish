@@ -39,10 +39,15 @@ function fish_prompt
     # Prompt status only if it's not 0
     set -l stat
     if test $last_status -ne 0
-        set stat (set_color brred)"[$last_status]"(set_color normal)
+        set stat (string join '' -- (set_color --reverse brred) ' ' "[$last_status]" ' ' (set_color normal))
     end
-    echo (set_color --reverse brgreen) (prompt_pwd) (set_color normal) (fish_vcs_prompt)
-    string join '' -- $stat (set_color brgreen) '$ ' (set_color normal)
+    set -l vcs (fish_vcs_prompt)
+    if test -n "$vcs"
+        set vcs (string trim --left --chars ' ' -- "$vcs")
+        set vcs (string join '' -- (set_color --reverse blue) ' ' "$vcs" ' ' (set_color normal))
+    end
+    string join '' -- (set_color --reverse brgreen) ' ' (prompt_pwd) ' ' (set_color normal) $vcs $stat
+    string join '' -- (set_color brgreen) '~> ' (set_color normal)
 end
 
 function localhost
@@ -54,5 +59,6 @@ end
 function conf
     /usr/bin/git --git-dir="$HOME/.dotfiles/" --work-tree="$HOME" $argv
 end
+complete -c conf -w git
 
 abbr -a em 'emacs -nw'
