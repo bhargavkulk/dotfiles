@@ -105,7 +105,7 @@
                       :font (font-spec :family "Ioskeley Mono"
                                        :size 14)))
 
-(when (member "Input Sans Narrow" (font-family-list))
+(when (member "Ioskeley Mono" (font-family-list))
   (set-face-attribute 'variable-pitch nil
                       :font (font-spec :family "Ioskeley Mono"
                                        :size 14)))

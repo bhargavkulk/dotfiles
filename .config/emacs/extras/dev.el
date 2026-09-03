@@ -216,35 +216,7 @@
           (or (apheleia-formatters-local-buffer-file-name)
               (apheleia-formatters-mode-extension) ".c"))))
 
-(use-package vdiff
-  :custom
-  (vdiff-lock-scrolling t)
-  (vdiff-auto-refine t)
-  (vdiff-subtraction-style 'full)
-  :config
-  ;; Vdiff calls `smerge-refine-regions' from its asynchronous process
-  ;; sentinel.  In that buffer `diff-command' can be buffer-local and nil,
-  ;; even though the external diff executable is available.  Bind it at the
-  ;; Smerge boundary so the binding is visible in every buffer it visits.
-  (require 'diff)
-  (defvar diff-command)
-  (defun my-vdiff--smerge-with-diff-command (function &rest args)
-    "Run Smerge refinement with a usable `diff-command'."
-    (let ((diff-command
-           (or (and (stringp diff-command) diff-command)
-               (executable-find "diff")
-               "diff")))
-      (apply function args)))
-  (unless (advice-member-p #'my-vdiff--smerge-with-diff-command
-                           'smerge-refine-regions)
-    (advice-add 'smerge-refine-regions :around
-                #'my-vdiff--smerge-with-diff-command)))
+;; - ghostel ---------------------------------------------------------------------------------------
 
-(use-package vdiff-magit
-  :after magit
-  :config
-  ;; vdiff-magit still calls Magit's removed helper on current Magit.
-  (unless (fboundp 'magit-get-revision-buffer)
-    (defun magit-get-revision-buffer (revision file)
-      "Return a buffer visiting FILE at REVISION for `vdiff-magit'."
-      (magit-find-file-noselect revision file t))))
+(use-package ghostel
+  :defer t)

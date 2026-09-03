@@ -9,11 +9,6 @@
   :config
   (perfect-margin-mode t))
 
-(use-package popwin
-  :demand t
-  :config
-  (popwin-mode 1))
-
 ;; NOTE enable when needed
 ;;(use-package virtual-auto-fill
 ;;  :config
