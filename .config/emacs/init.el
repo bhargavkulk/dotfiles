@@ -1,6 +1,6 @@
-;;; -*- lexical-binding: t -*-
+;;; init.el --- My Emacs Config -*- lexical-binding: t -*-
 
-;; (setenv "TERMINFO" nil)
+;;; Code:
 
 (set-charset-priority 'unicode)
 (prefer-coding-system 'utf-8-unix)
@@ -9,6 +9,9 @@
 (when (< emacs-major-version 31)
   (error "Emacs Bedrock only works with Emacs 31 and newer; you have version %s"
          emacs-major-version))
+
+;; Prefer side-by-side windows when Emacs splits automatically.
+(setq split-window-preferred-direction 'horizontal)
 
 (add-to-list 'display-buffer-alist
              '("\\`\\*\\(Warnings\\|Compile-Log\\)\\*\\'"
@@ -214,6 +217,12 @@
 ;; Follow symlinks in dired
 (setopt vc-follow-symlinks t)
 
+;; mode-line cusotmizations
+(setopt display-time-format "[%a %b %d, %H:%M]")
+(setopt display-time-default-load-average nil)
+(display-time-mode 1)
+(setq mode-line-position-column-line-format '(" %l:%c"))
+
 ;; - Keybindings -----------------------------------------------------------------------------------
 
 ;; bind-key is probably the easiest way to bind stuff
@@ -234,6 +243,7 @@
   (other-window 1))
 
 (defun beginning-of-defun-dwim ()
+  "Use treesitter to move between defuns if available."
   (interactive)
   (if (and (fboundp 'treesit-beginning-of-defun)
            (bound-and-true-p treesit-primary-parser))
@@ -241,6 +251,7 @@
     (beginning-of-defun)))
 
 (defun end-of-defun-dwim ()
+  "Use treesitter to move between defuns if available."
   (interactive)
   (if (and (fboundp 'treesit-end-of-defun)
            (bound-and-true-p treesit-primary-parser))
@@ -361,3 +372,7 @@ enabled."
 (load-file (expand-file-name "extras/org.el" user-emacs-directory))
 
 (setq gc-cons-threshold 800000)
+
+(provide 'init)
+
+;;; init.el ends here

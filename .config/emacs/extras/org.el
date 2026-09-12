@@ -42,6 +42,7 @@
   :hook
   (dired-mode . denote-dired-mode)
   :custom
+  (denote-prompts '(title))
   (denote-front-matter-components-present-even-if-empty-value
    '(title date identifier))
   (denote-org-front-matter

@@ -66,7 +66,20 @@
 
 ;; Magit: best Git client to ever exist
 (use-package magit
-  :bind (("C-x g" . magit-status)))
+  :bind
+  ("C-x g" . magit-status)
+  (:map magit-status-mode-map
+        ("P" . magit-push-current-to-upstream))
+  :init
+  (defun magit-dotfiles-status ()
+    "Open Magit for the bare dotfiles repository and home worktree."
+    (interactive)
+    (let ((default-directory (expand-file-name "~/"))
+          (process-environment
+           (append (list (concat "GIT_DIR=" (expand-file-name "~/.dotfiles"))
+                         (concat "GIT_WORK_TREE=" (expand-file-name "~/")))
+                   process-environment)))
+      (magit-status-setup-buffer default-directory))))
 
 ;; Show TODOs in magit buffer
 (use-package magit-todos
@@ -176,6 +189,8 @@
   (eglot-highlight-symbol nil)
   (eglot-autoshutdown t)
   (eglot-prefer-plaintext t)
+  (eldoc-display-functions
+   '(eldoc-display-in-echo-area eldoc-display-in-buffer))
   :config
   ;; Avoid changing line heights if your font is wonky. See
   ;; https://github.com/joaotavora/eglot/discussions/1492
@@ -209,6 +224,9 @@
         '(ruff-isort ruff))
   (setf (alist-get 'python-ts-mode apheleia-mode-alist)
         '(ruff-isort ruff))
+  ;; Prettier has no parser for Mako templates, even when they are
+  ;; edited with `web-mode'.
+  (add-to-list 'apheleia-mode-alist '("\\.mako\\'" . nil))
   (setf (alist-get 'rust-mode apheleia-formatters)
         '("rustfmt" "--edition" "2024" "--quiet" "--emit" "stdout"))
   (setf (alist-get 'clang-format apheleia-formatters)
