@@ -2,13 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
-
-if status is-interactive
-    # Commands to run in interactive sessions can go here
-end
-
-set -gx PROJECT_PATH ~/repos
-set -gx EDITOR emacsclient -c -a ''
+set -gx EDITOR "emacsclient -nw -a ''"
 
 if test -d /home/linuxbrew/.linuxbrew # Linux
     set -gx HOMEBREW_PREFIX "/home/linuxbrew/.linuxbrew"
@@ -33,7 +27,6 @@ fish_add_path ~/bin/
 fish_add_path ~/.local/bin/
 fish_add_path /Users/bhargavkk/Library/pnpm/bin
 
-
 function fish_prompt
     set -l last_status $status
     # Prompt status only if it's not 0
@@ -50,6 +43,10 @@ function fish_prompt
     string join '' -- (set_color brgreen) '~> ' (set_color normal)
 end
 
+function fish_greeting
+    fish_logo
+end
+
 function localhost
     set -l dir (test (count $argv) -ge 1; and echo $argv[1]; or echo ".")
     set -l port (test (count $argv) -ge 2; and echo $argv[2]; or echo "8000")
@@ -61,4 +58,18 @@ function conf
 end
 complete -c conf -w git
 
-abbr -a em 'emacs -nw'
+function __conf_git_complete
+    set -lx GIT_DIR "$HOME/.dotfiles"
+    set -lx GIT_WORK_TREE "$HOME"
+    set -l commandline (commandline --current-process)
+    set commandline (string replace -r '^conf($| )' 'git$1' -- $commandline)
+    complete -C -- $commandline
+end
+complete -c conf -a '(__conf_git_complete)'
+
+function magit
+    set -l git_root (git rev-parse --show-toplevel)
+    emacsclient -nw -a emacs -e "(progn (magit-status \"$git_root\") (delete-other-windows))"
+end
+
+abbr -a em 'emacsclient -nw'

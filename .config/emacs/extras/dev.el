@@ -31,22 +31,21 @@
 
 ;; - Built-in config for developers ----------------------------------------------------------------
 
-(use-package project
+(use-package treesit
   :ensure nil
-  :config
-  (setopt project-switch-commands 'project-find-file)
-  ;; Treesitter config
-  (setopt treesit-enabled-modes
-          '(python-ts-mode c-ts-mode c++-ts-mode))
-  (setopt treesit-font-lock-level 4)    ; Amount to highlight: 4 is max highlighting
-  :hook
-  ;; Auto parenthesis matching
-  ((prog-mode . electric-pair-mode)))
+  :custom
+  (treesit-enabled-modes
+   '(python-ts-mode c-ts-mode c++-ts-mode))
+  (treesit-font-lock-level 4))
 
 (use-package project
-  :config
-  (when (>= emacs-major-version 30)
-    (setopt project-mode-line t)))      ; show project name in modeline
+  :ensure nil
+  :custom
+  (project-switch-commands 'project-find-file)
+  (project-mode-line t)
+  :hook
+  ((prog-mode . electric-pair-mode)
+   (prog-mode . hs-minor-mode)))
 
 ;; - Version Control -------------------------------------------------------------------------------
 
@@ -57,9 +56,8 @@
   :hook (prog-mode . hl-todo-mode)
   :config
   (setq hl-todo-keyword-faces
-        '(("TODO"   . "#fa9441")
-          ("NOTE"   . "#a3be8c"))))
-
+        '(("TODO" . "#fa9441")
+          ("NOTE" . "#a3be8c"))))
 
 (use-package transient
   :ensure t)
@@ -125,28 +123,11 @@
   (:map c-mode-map
         ("C-c C-f" . ff-find-other-file)))
 
-(define-derived-mode egglog-mode lisp-data-mode "Egglog"
-  "Major mode for Egglog, derived from `lisp-data-mode'."
-  (setq-local comment-start ";")
-  (setq-local comment-end "")
-  (setq-local font-lock-defaults
-              '((
-                 ;; Keywords
-                 ("\\_<\\(birewrite\\|constructor\\|calc\\|check\\|clear\\|clear-rules\\|datatype\\|declare\\|define\\|delete\\|extract\\|fail\\|function\\|include\\|input\\|let\\|panic\\|pop\\|print-stats\\|print-size\\|print-table\\|print\\|push\\|query\\|relation\\|repeat\\|rewrite\\|rule\\|run-schedule\\|run\\|set\\|sort\\|union\\)\\_>" . font-lock-keyword-face)
-                 ;; Identifiers (variables)
-                 ("\\<[a-zA-Z][a-zA-Z0-9_]*\\>" . font-lock-variable-name-face)
-                 ;; Numbers (integers and floats)
-                 ("-?[0-9]+\\(?:\\.[0-9]*\\)?" . font-lock-constant-face)
-                 ;; Strings
-                 ("\"[^\"]*\"" . font-lock-string-face)
-                 ;; Comments
-                 (";.*" . font-lock-comment-face)
-                 ;; Builtins (symbols starting with :)
-                 (":\\w+" . font-lock-builtin-face))))
-
-  ;; Make `datatype` indent like `defun`
-  (put 'datatype 'lisp-indent-function 'defun))
-(add-to-list 'auto-mode-alist '("\\.egg\\'" . egglog-mode))
+(use-package lean-mode
+  :ensure (:host github
+                 :repo "bhargavkulk/lean-mode"
+                 :files (:defaults ("data" "data/*.json")))
+  :demand t)
 
 ;; - Eglot, the built-in LSP client for Emacs ------------------------------------------------------
 
@@ -200,12 +181,6 @@
   (add-to-list 'eglot-server-programs
                `((python-ts-mode python-mode) .
                  ("uv" "run" "ty" "server"))))
-
-(use-package lean-mode
-  :ensure (:host github
-                 :repo "bhargavkulk/lean-mode"
-                 :files (:defaults ("data" "data/*.json")))
-  :demand t)
 
 ;; You can set various options for each language server. For
 ;; example, you can raise the number of completions surfaced by a

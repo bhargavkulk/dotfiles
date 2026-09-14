@@ -192,7 +192,7 @@ This command supports `meow-selection-command-fallback'."
    '((?r . round)
      (?s . square)
      (?c . curly)
-     (?' . string)
+     (?g . string)
      (?b . buffer)
      (?p . paragraph)
      (?l . line)

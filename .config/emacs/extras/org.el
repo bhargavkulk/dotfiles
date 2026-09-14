@@ -35,7 +35,13 @@
 
 (use-package denote
   :ensure t
-  :demand t
+  :bind
+  ("C-c d n" . denote)
+  ("C-c d o" . denote-open-or-create)
+  ("C-c d r" . denote-rename-file)
+  ("C-c d l" . denote-insert-link)
+  ("C-c d b" . denote-find-backlinks-with-location)
+  ("C-c d d" . (lambda () (interactive) (dired denote-directory)))
   :config
   (denote-rename-buffer-mode)
   (put 'denote-file-type 'safe-local-variable 'symbolp)

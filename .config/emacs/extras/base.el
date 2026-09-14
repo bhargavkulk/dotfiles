@@ -9,26 +9,6 @@
   :config
   (perfect-margin-mode t))
 
-;; NOTE enable when needed
-;;(use-package virtual-auto-fill
-;;  :config
-;;  (with-eval-after-load 'markdown-mode
-;;    (add-hook 'markdown-mode-hook #'virtual-auto-fill-mode)))
-
-;; - Motion aids -----------------------------------------------------------------------------------
-
-;; NOTE have not used this, need to use it more
-(use-package avy
-  :bind (("C-c g c" . avy-goto-char-timer)
-         ("C-c g g" . avy-goto-line)
-         :map isearch-mode-map
-         ("C-j" . avy-isearch))
-  :custom
-  (avy-timeout-seconds 2)
-  (avy-all-windows nil)
-  (avy-background nil)
-  (avy-style 'pre))
-
 ;; - Consult: Misc. enhanced commands --------------------------------------------------------------
 
 (use-package consult
@@ -52,7 +32,7 @@
   :ensure nil
   :after vertico
   :bind (:map vertico-map
-              ("M-DEL" . vertico-directory-delete-word))
+              ("S-DEL" . vertico-directory-delete-word))
   :custom
   (vertico-cycle t))
 
@@ -88,29 +68,6 @@
   (with-eval-after-load 'savehist
     (cl-pushnew 'corfu-history savehist-additional-variables))
   (corfu-history-mode t))
-
-;; Fancy completion-at-point functions; there's too much in the cape package to configure here; dive
-;; in when you're comfortable!
-(use-package cape
-  :init
-  (add-to-list 'completion-at-point-functions #'cape-file))
-
-(use-package eshell
-  :ensure nil
-  :init
-  (defun bedrock/setup-eshell ()
-    ;; Something funny is going on with how Eshell sets up its keymaps; this is a work-around to
-    ;; make C-r bound in the keymap
-    (keymap-set eshell-mode-map "C-r" 'consult-history))
-  :hook ((eshell-mode . bedrock/setup-eshell)))
-
-;; Eat: Emulate A Terminal
-(use-package eat
-  :custom
-  (eat-term-name "xterm")
-  :config
-  (eat-eshell-mode)                     ; use Eat to handle term codes in program output
-  (eat-eshell-visual-command-mode))     ; commands like less will be handled by Eat
 
 ;; Orderless: powerful completion style
 (use-package orderless

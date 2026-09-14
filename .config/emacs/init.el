@@ -323,6 +323,14 @@ enabled."
 
 (use-package dired
   :ensure nil
+  :config
+  (with-eval-after-load 'dired
+    (require 'dired-x)
+    ;; Enable dired-omit-mode by default in all Dired buffers
+    (add-hook 'dired-mode-hook #'dired-omit-mode)
+    ;; Add .DS_Store to the regex list of files to hide
+    (setq dired-omit-files
+          (concat dired-omit-files "\\|^\\.DS_Store$")))
   :custom
   (dired-kill-when-opening-new-dired-buffer t)
   (dired-isearch-filenames 'dwim)
