@@ -1,0 +1,11 @@
+set number
+let mapleader = " "
+
+set expandtab
+set tabstop=4
+set shiftwidth=0
+set nowrap
+set smartcase
+set ignorecase
+set nohlsearch
+set noswapfile
