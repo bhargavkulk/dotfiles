@@ -15,6 +15,7 @@ else if test -d /opt/homebrew # MacOS
 end
 
 fish_add_path -gP "$HOMEBREW_PREFIX/bin" "$HOMEBREW_PREFIX/sbin"
+fish_add_path -gP "$HOMEBREW_PREFIX/opt/llvm/bin"
 
 ! set -q MANPATH; and set MANPATH ''
 set -gx MANPATH "$HOMEBREW_PREFIX/share/man" $MANPATH
@@ -26,6 +27,8 @@ fish_add_path ~/.cargo/bin/
 fish_add_path ~/bin/
 fish_add_path ~/.local/bin/
 fish_add_path /Users/bhargavkk/Library/pnpm/bin
+fish_add_path "/Applications/Racket v9.3/bin"
+
 
 function fish_prompt
     set -l last_status $status
@@ -73,3 +76,12 @@ function magit
 end
 
 abbr -a em 'emacsclient -nw'
+
+
+# BEGIN opam configuration
+# This is useful if you're using opam as it adds:
+#   - the correct directories to the PATH
+#   - auto-completion for the opam binary
+# This section can be safely removed at any time if needed.
+test -r '/Users/bhargavkk/.opam/opam-init/init.fish' && source '/Users/bhargavkk/.opam/opam-init/init.fish' > /dev/null 2> /dev/null; or true
+# END opam configuration

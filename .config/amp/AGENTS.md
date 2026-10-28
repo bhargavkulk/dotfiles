@@ -37,6 +37,11 @@
 - Do not introduce abstractions for hypothetical reuse or extensibility; add one only when it makes
   the current code simpler.
 
+# Shell
+
+- The user's shell is fish. Give fish-compatible commands; for example, use `set -gx PATH ... $PATH`
+  rather than POSIX `export` syntax.
+
 # Responses
 
 - Lead with the answer; skip preambles, restatement, and unnecessary narration.

@@ -29,6 +29,30 @@
 
 (bind-key "<f5>" #'compile-dwim)
 
+(use-package htmlize
+  :defer t
+  :commands htmlize-region-for-paste)
+
+(defun copy-formatted-region (beg end)
+  "Copy the selected region as syntax-highlighted rich text."
+  (interactive (if (use-region-p)
+                   (list (region-beginning) (region-end))
+                 (user-error "Select a region first")))
+  (unless (eq system-type 'darwin)
+    (user-error "Formatted copying is configured for macOS"))
+  (require 'htmlize)
+  (copy-region-as-kill beg end)
+  (let ((html (let ((mark-active nil))
+                (htmlize-region-for-paste beg end))))
+    (with-temp-buffer
+      (insert html)
+      (unless (zerop
+               (call-process-region
+                (point-min) (point-max) shell-file-name nil nil nil shell-command-switch
+                "textutil -inputencoding UTF-8 -stdin -format html -convert rtf -stdout | pbcopy"))
+        (error "Could not copy formatted region"))))
+  (message "Copied formatted region"))
+
 ;; - Built-in config for developers ----------------------------------------------------------------
 
 (use-package treesit
@@ -63,6 +87,10 @@
   :ensure t)
 
 ;; Magit: best Git client to ever exist
+(use-package git-commit
+  :ensure nil
+  :demand t)
+
 (use-package magit
   :bind
   ("C-x g" . magit-status)
@@ -180,7 +208,9 @@
   (fset #'jsonrpc--log-event #'ignore)  ; massive perf boost---don't log every event
   (add-to-list 'eglot-server-programs
                `((python-ts-mode python-mode) .
-                 ("uv" "run" "ty" "server"))))
+                 ("uv" "run" "ty" "server")))
+  (add-to-list 'eglot-server-programs
+               '(org-mode . ("harper-ls" "--stdio"))))
 
 ;; You can set various options for each language server. For
 ;; example, you can raise the number of completions surfaced by a
