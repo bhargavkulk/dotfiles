@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import subprocess
+
+
+def in_window(query):
+    return f"""(let* ((frame (selected-frame))
+              (window (frame-selected-window frame))
+              (buffer (window-buffer window)))
+         (with-selected-window window
+           {query}))"""
+
+
+def elisp(command, args):
+    if command == "context":
+        return in_window("""(let* ((point (window-point window))
+                  (active (use-region-p)))
+             (json-encode
+              `((file . ,(buffer-file-name buffer))
+                (buffer . ,(buffer-name buffer))
+                (mode . ,(symbol-name major-mode))
+                (modified . ,(if (buffer-modified-p buffer) t :json-false))
+                (line . ,(line-number-at-pos point))
+                (column . ,(save-excursion (goto-char point) (current-column)))
+                (region_active . ,(if active t :json-false))
+                (region_start . ,(and active (region-beginning)))
+                (region_end . ,(and active (region-end)))))))""")
+    if command == "read_region":
+        return """(json-encode
+ (let ((selection (or (gui-get-selection 'PRIMARY)
+                      (gui-get-selection 'CLIPBOARD))))
+   (and selection (substring-no-properties selection))))"""
+    if command == "read_context":
+        return in_window(f"""(let* ((point (window-point window))
+                  (line (line-number-at-pos point))
+                  (column (save-excursion (goto-char point) (current-column))))
+             (save-excursion
+               (goto-char point)
+               (forward-line (- {args.before}))
+               (let ((start (point))
+                     (start-line (line-number-at-pos)))
+                 (goto-char point)
+                 (forward-line {args.after})
+                 (end-of-line)
+                 (json-encode
+                  `((start_line . ,start-line)
+                    (cursor_line . ,line)
+                    (cursor_column . ,column)
+                    (text . ,(buffer-substring-no-properties start (point))))))))""")
+    if command == "current_file":
+        return in_window("(json-encode (buffer-file-name buffer))")
+    if command == "diagnostics":
+        return in_window("""(json-encode
+ (if (and (bound-and-true-p flymake-mode) (fboundp 'flymake-diagnostics))
+     (vconcat
+      (mapcar
+       (lambda (diagnostic)
+         (let ((position (flymake-diagnostic-beg diagnostic)))
+           `((severity . ,(symbol-name (flymake-diagnostic-type diagnostic)))
+             (line . ,(line-number-at-pos position))
+             (column . ,(save-excursion (goto-char position) (current-column)))
+             (message . ,(flymake-diagnostic-text diagnostic)))))
+       (flymake-diagnostics (point-min) (point-max))))
+   []))""")
+    if command == "symbol_at_point":
+        return in_window("(json-encode (thing-at-point 'symbol t))")
+    raise ValueError(command)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(prog="emacs_cli")
+    commands = parser.add_subparsers(dest="command", required=True)
+    commands.add_parser("context")
+    commands.add_parser("read_region")
+
+    context = commands.add_parser("read_context")
+    context.add_argument("--before", type=int, default=10)
+    context.add_argument("--after", type=int, default=10)
+
+    commands.add_parser("current_file")
+
+    commands.add_parser("diagnostics")
+
+    commands.add_parser("symbol_at_point")
+
+    args = parser.parse_args()
+
+    if getattr(args, "before", 0) < 0 or getattr(args, "after", 0) < 0:
+        parser.error("context line counts must not be negative")
+
+    return args
+
+
+def main():
+    args = parse_args()
+    try:
+        result = subprocess.run(
+            ["emacsclient", "--eval", elisp(args.command, args)],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        print(json.dumps(json.loads(json.loads(result.stdout))))
+    except subprocess.CalledProcessError as error:
+        raise SystemExit(error.stderr.strip() or error.stdout.strip())
+
+
+if __name__ == "__main__":
+    main()
