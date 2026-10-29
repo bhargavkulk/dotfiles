@@ -13,3 +13,24 @@
 	defaultBranch = main
 [credential "https://ampcode.com"]
 	helper = !amp git-credential-helper
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[diff]
+	algorithm = histogram
+	mnemonicPrefix = true
+	renames = true
+[push]
+	followTags = true
+[fetch]
+	prune = true
+	pruneTags = true
+	all = true
+[merge]
+	conflictstyle = zdiff3
+[core]
+	fsmonitor = false
+	untrackedCache = true

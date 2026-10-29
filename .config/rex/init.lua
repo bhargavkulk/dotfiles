@@ -5,8 +5,8 @@ rex.bind("ctrl+alt+1", "pane.zoom")
 rex.bind("ctrl+alt+o", "pane.focus_next")
 
 rex.action{
-  name = "review_in_magit",
-  title = "Review in Magit",
+  name = "magit",
+  title = "Magit",
   run = function(ctx)
     if not ctx.block_id then error("Focus a terminal in a Git repository first", 0) end
 
@@ -93,4 +93,4 @@ rex.action{
   end,
 }
 
-rex.bind("cmd+shift+g", "review_in_magit")
+rex.bind("cmd+shift+g", "magit")

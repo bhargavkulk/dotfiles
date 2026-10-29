@@ -96,6 +96,20 @@
   ("C-x g" . magit-status)
   (:map magit-status-mode-map
         ("P" . magit-push-current-to-upstream))
+  :config
+  (transient-define-suffix my-magit-toggle-auto-revert ()
+    "Toggle automatic reversion of file-visiting buffers."
+    :transient t
+    :key "C-c a"
+    :description (lambda ()
+                   (if global-auto-revert-mode
+                       "Disable global auto-revert"
+                     "Enable global auto-revert"))
+    (interactive)
+    (global-auto-revert-mode 'toggle))
+  (transient-append-suffix
+   'magit-dispatch "C-x i"
+   '("C-c a" my-magit-toggle-auto-revert))
   :init
   (defun magit-dotfiles-status ()
     "Open Magit for the bare dotfiles repository and home worktree."
