@@ -64,6 +64,7 @@ rex.action{
                     "#'rex-magit-review--quit)) " ..
       "(magit-status " .. string.format("%q", root) .. ") " ..
       "(delete-other-windows) " ..
+      "(send-string-to-terminal \"\\e]7501;state=idle:app=git\\a\") " ..
       "(set-frame-parameter nil 'rex-magit-review t))"
 
     local split, split_err = rex.session.new_split{

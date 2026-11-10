@@ -30,22 +30,6 @@ fish_add_path /Users/bhargavkk/Library/pnpm/bin
 fish_add_path "/Applications/Racket v9.3/bin"
 
 
-function fish_prompt
-    set -l last_status $status
-    # Prompt status only if it's not 0
-    set -l stat
-    if test $last_status -ne 0
-        set stat (string join '' -- (set_color --reverse brred) ' ' "[$last_status]" ' ' (set_color normal))
-    end
-    set -l vcs (fish_vcs_prompt)
-    if test -n "$vcs"
-        set vcs (string trim --left --chars ' ' -- "$vcs")
-        set vcs (string join '' -- (set_color --reverse blue) ' ' "$vcs" ' ' (set_color normal))
-    end
-    string join '' -- (set_color --reverse brgreen) ' ' (prompt_pwd) ' ' (set_color normal) $vcs $stat
-    string join '' -- (set_color brgreen) '~> ' (set_color normal)
-end
-
 function fish_greeting
     fish_logo
 end
@@ -54,6 +38,14 @@ function localhost
     set -l dir (test (count $argv) -ge 1; and echo $argv[1]; or echo ".")
     set -l port (test (count $argv) -ge 2; and echo $argv[2]; or echo "8000")
     python3 -m http.server $port -d $dir
+end
+
+function browser
+    if test (count $argv) -eq 0
+        command open -a Firefox .
+    else
+        command open -a Firefox $argv
+    end
 end
 
 function conf

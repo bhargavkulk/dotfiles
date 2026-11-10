@@ -49,3 +49,19 @@
 - Keep paragraphs focused and easy to scan.
   Use headings and bullets only when they clarify the structure.
 - Prefer a small example, code excerpt, or diagram when it explains the idea better than more prose.
+- Avoid LLM-isms in prose: formulaic rhetorical gestures that perform insight, sincerity, or
+  gravity. Common forms:
+    - "that's X, not Y" / "that's not X, it's Y"
+    - "That's the spine", "Fair hit", "A real observation", "That's the whole thing", "That's doing
+      real work", "the part that matters most", "say the word", "the moment earned it"
+    - "load-bearing", "round-trip" as a verb
+    - Genuinely.", "Quietly.", "Honestly."
+    - "One honest caveat:", "Uncertainty flag:", "Worth naming:", "worth stating clearly", "worth
+      holding onto"
+    - Fake-therapy imperatives: "That's something to sit with", "Sharpen that", "Notice the arc of
+      what just happened", "a signal to slow down, not a verdict"
+- Don't have a thing do what only a person does. Frequent offenders are "names", "carries", "wants"
+  and "promises". Say what it has, contains or needs: "the manifest never names a branch" → "the
+  manifest has no branch names", "list items now carry their source lines" → "list items now include
+  their source lines", "this cluster wants its own chapter" → "this cluster should be its own
+  chapter". Standard technical usage is fine: a module owns its state, a server refuses a request.
